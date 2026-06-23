@@ -14,11 +14,19 @@ class Triangle{
 private:
   Position _B;
   Position _C;
+  bool _larger_B;
+  float _lenAB;
+  float _lenBC;
+  //float _angCAB;
+  float _angABC;
+  void calc_forward();
+  void calc_inverse();
 public:
   Triangle(float lenAB, float lenBC);
-  Position updateCxy(float x, float y, bool as_delta);
-  Position updateCra(float r, float a, bool as_delta);
-  float updateBang(float a, bool as_delta);
-  float updateAang(float a, bool as_delta);
-  bool setBtype(bool at_upper);
+  bool B_type(bool larger);
+  bool is_in_range();
+  Position C_xy(float x = 0, float y = 0, bool as_delta = false);
+  Position C_ra(float r = 0, float a = 0, bool as_delta = false);
+  //float A_ang(float a = 0, bool as_delta = false);
+  float B_ang(float a = 0, bool as_delta = false);
 };

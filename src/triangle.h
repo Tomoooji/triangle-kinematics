@@ -17,7 +17,6 @@ private:
   bool _larger_B;
   float _lenAB;
   float _lenBC;
-  //float _angCAB;
   float _angABC;
   void calc_forward();
   void calc_inverse();
@@ -25,8 +24,8 @@ public:
   Triangle(float lenAB, float lenBC);
   bool B_type(bool larger);
   bool is_in_range();
-  Position C_xy(float x = 0, float y = 0, bool as_delta = false);
-  Position C_ra(float r = 0, float a = 0, bool as_delta = false);
-  //float A_ang(float a = 0, bool as_delta = false);
+  bool C_xy(float x = 0, float y = 0, bool as_delta = false);
+  bool C_ra(float r = 0, float a = 0, bool as_delta = false);
   float B_ang(float a = 0, bool as_delta = false);
+  float C_ang();
 };

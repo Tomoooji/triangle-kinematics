@@ -2,7 +2,7 @@
 #include "triangle.h"
 
 void Position::XYtoRA(){
-  this->r = sqrt((this->x * this->x)+(this->y * this->y));
+  this->r = sqrt(sq(this->x)+sq(this->y));
   this->a = atan2(this->y, this->x);
 }
 
@@ -20,21 +20,40 @@ bool Triangle::B_type(bool larger){
   return is_changed;
 }
 
-Position Triangle::C_xy(float x, float y, bool as_delta){
+bool Triangle::C_xy(float x, float y, bool as_delta){
+  float lastx = this->_C.x;
+  float lasty = this->_C.y;
   this->_C.x = x + (as_delta? this->_C.x: 0);
   this->_C.y = y + (as_delta? this->_C.y: 0);
-  if(x || y || as_delta){
-    this->_C.XYtoRA();
+  this->_C.XYtoRA();
+  if(this->is_in_range()){
     this->calc_inverse();
+    return true;
   }
-  return this->_C;
+  else{
+    this->_C.x = lastx;
+    this->_C.y = lasty;
+    this->_C.XYtoRA();
+    return false;
+  }
 }
 
-Position Triangle::C_ra(float r, float a, bool as_delta){
+bool Triangle::C_ra(float r, float a, bool as_delta){
+  float lastr = this->_C.r;
+  float lasta = this->_C.a;
   this->_C.r = r + (as_delta? this->_C.r: 0);
   this->_C.a = a + (as_delta? this->_C.a: 0);
-  this->calc_inverse();
-  return this->_C;
+  this->_C.RAtoXY();
+  if(this->is_in_range()){
+    this->calc_inverse();
+    return true;
+  }
+  else{
+    this->_C.r = lastr;
+    this->_C.a = lasta;
+    this->_C.RAtoXY();
+    return false;
+  }
 }
 
 float Triangle::B_ang(float a, bool as_delta){
@@ -43,8 +62,12 @@ float Triangle::B_ang(float a, bool as_delta){
   return this->_angABC;
 }
 
+float Triangle::C_ang(){
+  return (this->_larger_B?1:-1)*this->_B.a + this->_angABC;
+}
+
 bool Triangle::is_in_range(){
-  return this->_lenAB - this->_lenBC < this->_C.r && this->_C.r < this->_lenAB + this->_lenBC;
+  return (this->_lenAB - this->_lenBC < this->_C.r) && (this->_C.r < this->_lenAB + this->_lenBC);
 }
 
 void Triangle::calc_forward(){
@@ -54,5 +77,7 @@ void Triangle::calc_forward(){
 }
 
 void Triangle::calc_inverse(){
-  this->_angABC = 
+  this->_angABC = acos((sq(this->_lenAB)+sq(this->_lenBC)-sq(this->_C.r)) / (2*this->_lenAB*this->_lenBC));
+  this->_B.a = this->_C.a + (this->_larger_B?1:-1)*acos((sq(this->_lenAB)+sq(this->_C.r)-sq(this->_lenBC)) / (2*this->_lenAB*this->_C.r));
+  this->_B.RAtoXY();
 }

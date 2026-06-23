@@ -26,6 +26,8 @@ public:
   bool is_in_range();
   bool C_xy(float x = 0, float y = 0, bool as_delta = false);
   bool C_ra(float r = 0, float a = 0, bool as_delta = false);
-  float B_ang(float a = 0, bool as_delta = false);
-  float C_ang();
+  float B_ang_rad(float a = 0, bool as_delta = false);
+  float B_ang_deg(float a = 0, bool as_delta = false);
+  float C_ang_rad();
+  float C_ang_deg();
 };

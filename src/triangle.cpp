@@ -56,14 +56,22 @@ bool Triangle::C_ra(float r, float a, bool as_delta){
   }
 }
 
-float Triangle::B_ang(float a, bool as_delta){
+float Triangle::B_ang_rad(float a, bool as_delta){
   this->_angABC = a + (as_delta? this->_angABC: 0);
   this->calc_forward();
   return this->_angABC;
 }
 
-float Triangle::C_ang(){
+float Triangle::B_ang_deg(float a, bool as_delta){
+  return rad_to_deg(this->B_ang_rad(deg_to_rad(a), as_delta));
+}
+
+float Triangle::C_ang_rad(){
   return (this->_larger_B?1:-1)*this->_B.a + this->_angABC;
+}
+
+float Triangle::C_ang_deg(){
+  return rad_to_deg(this->C_ang_rad());
 }
 
 bool Triangle::is_in_range(){

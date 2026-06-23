@@ -1,1 +1,0 @@
-// triangle-kinematic class

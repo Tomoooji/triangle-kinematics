@@ -1,7 +1,7 @@
 /* sakuarm.ino
 ArduinoUNOで動かす朔アーム
 (手首角度維持/個別関節角度調節付き)
-input:アナログジョイスティック+ボタン×3
+input:アナログジョイスティック+ボタン×3(<-ボタンの役割どうしよ)
 output:(普通の)Servo
 */
 #include <Servo.h>

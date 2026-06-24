@@ -16,6 +16,7 @@ const int arm_ang_speed = 1;
 const int stick_ignore_range = 30;
 
 Triangle arm{36,26};
+arm.C_xy(10,10);
 Servo arm_servo[3];
 
 void setup(){

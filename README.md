@@ -4,13 +4,14 @@ general class for calculating angles and positions of 2 axis robot arm
 
 ```
  (lager_B : true)      (lager_B : false)
-                    |              C＿                       |              ・/ 。   
-           B        |           ・ /       
-         ／*\        |         ・  /        
-       ／    \       |       ・   /         
-     ／       \      |     ・    /          
-   ／          \ 。　 |   ・   * /           
-  A・・・・・・・・C―――  | A――――――B             
+                     |               C＿
+                     |             ・/ 。
+           B         |           ・ /
+         ／*\        |         ・  /
+       ／    \       |       ・   /
+     ／       \      |     ・    /
+   ／          \ 。　 |   ・   * /
+  A・・・・・・・・C―――  | A――――――B 
  ------------------------------------------
  A : Shoulder of arm
  B : ellbow of arm

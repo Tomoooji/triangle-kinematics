@@ -1,14 +1,19 @@
 #include <Arduino.h>
 #include "triangle.h"
 
+float clip2pi(float ang){
+  return (ang>TWO_PI? ang-TWO_PI: (ang<0? ang+TWO_PI: ang));
+}
+
 void Position::XYtoRA(){
   this->r = sqrt(sq(this->x)+sq(this->y));
-  this->a = atan2(this->y, this->x);
+  this->a = clip2pi(atan2(this->y, this->x));
 }
 
 void Position::RAtoXY(){
   this->x = this->r * cos(this->a);
   this->y = this->r * sin(this->a);
+  this->a = clip2pi(this->a);
 }
 
 Triangle::Triangle(float lneAB, float lenBC, bool is_B_upper):
@@ -63,11 +68,11 @@ float Triangle::A_ang_rad(float a, bool as_delta){
 }
 
 float Triangle::A_ang_deg(float a, bool as_delta){
-  return degrees(this->A_ang_rad(a, as_delta));
+  return degrees(this->A_ang_rad(radians(a), as_delta));
 }
 
 float Triangle::B_ang_rad(float a, bool as_delta){
-  this->_angABC = a + (as_delta? this->_angABC: 0);
+  this->_angABC = clip2pi(a + (as_delta? this->_angABC: 0));
   this->calc_forward();
   return this->_angABC;
 }
@@ -77,7 +82,7 @@ float Triangle::B_ang_deg(float a, bool as_delta){
 }
 
 float Triangle::C_ang_rad(){
-  return (this->_larger_B?1:-1)*this->_B.a + this->_angABC;
+  return clip2pi((this->_larger_B?1:-1)*this->_B.a + this->_angABC);
 }
 
 float Triangle::C_ang_deg(){

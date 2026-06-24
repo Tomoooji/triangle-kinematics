@@ -1,6 +1,8 @@
 // triangle-kinematic class
 #pragma once
 
+float clip2pi(float ang)()
+
 struct Position{
   float x;
   float y;

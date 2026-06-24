@@ -73,7 +73,7 @@ float Triangle::B_ang_rad(float a, bool as_delta){
 }
 
 float Triangle::B_ang_deg(float a, bool as_delta){
-  return rad_to_deg(this->B_ang_rad(deg_to_rad(a), as_delta));
+  return degrees(this->B_ang_rad(radians(a), as_delta));
 }
 
 float Triangle::C_ang_rad(){
@@ -81,7 +81,7 @@ float Triangle::C_ang_rad(){
 }
 
 float Triangle::C_ang_deg(){
-  return rad_to_deg(this->C_ang_rad());
+  return degrees(this->C_ang_rad());
 }
 
 bool Triangle::is_in_range(){

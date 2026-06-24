@@ -11,8 +11,9 @@ void Position::RAtoXY(){
   this->y = this->r * sin(this->a);
 }
 
-Triangle::Triangle(float lneAB, float lenBC):
-  _lenAB(lneAB),_lenBC(lenBC),_B(0,0,lneAB,0),_C(0,0,lenBC,0){}
+Triangle::Triangle(float lneAB, float lenBC, bool is_B_upper):
+  _lenAB(lneAB),_lenBC(lenBC),_B(0,0,lneAB,0),_C(0,0,lenBC,0),_larger_B(is_B_upper)
+ {this->C_ra();}
 
 bool Triangle::B_type(bool larger){
   bool is_changed = this->_larger_B == larger;
@@ -54,6 +55,15 @@ bool Triangle::C_ra(float r, float a, bool as_delta){
     this->_C.RAtoXY();
     return false;
   }
+}
+
+float Triangle::A_ang_rad(float a, bool as_delta){
+  this->C_ra(this->_C.r,a + (as_delta? this->_C.a: 0),false);
+  return this->_C.a;
+}
+
+float Triangle::A_ang_deg(float a, bool as_delta){
+  return degrees(this->A_ang_rad(a, as_delta));
 }
 
 float Triangle::B_ang_rad(float a, bool as_delta){

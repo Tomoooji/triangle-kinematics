@@ -39,27 +39,36 @@ void loop(){
   int valY = analogRead(stick_pin[1]);
   if(abs(valY)<=stick_ignore_range) valY = 0;
   
-  // スティックを動かした分だけアームが移動(離すとその位置で止まる)
-  arm.C_xy(
-    valX>0?arm_xy_speed:(valX<0?-arm_xy_speed:0),
-    valY>0?arm_xy_speed:(valY<0?-arm_xy_speed:0),
-    true
-  );
-
-  /*
-  スティックとアームの位置を対応(離すと元の位置に戻る)
-  arm.C_xy(
-    origin[0] + convert(valX),
-    origin[1] + convert(valY),
-    false
-  );
-  */
-
+  if(digitalRead(button_pin[0]){
+    
+  }
+  else if(digitalRead(button_pin[1]){
+    
+  }
+  else if(digitalRead(button_pin[2]){
+    
+  }
+  else{
+    // スティックを動かした分だけアームが移動(離すとその位置で止まる)
+    arm.C_xy(
+      valX>0?arm_xy_speed:(valX<0?-arm_xy_speed:0),
+      valY>0?arm_xy_speed:(valY<0?-arm_xy_speed:0),
+      true
+    );
+    
+    /*
+    スティックとアームの位置を対応(離すと元の位置に戻る)
+    arm.C_xy(
+      origin[0] + convert(valX),
+      origin[1] + convert(valY),
+      false
+    );
+    */
+  }
   arm_servo[0].write(constrain(arm.A_ang_deg(),0,180));
   arm_servo[1].write(constrain(arm.B_ang_deg(),0,180));
   arm_servo[2].write(constrain(arm.C_ang_deg()-90,0,180));
-
+  
   arm.A_ang_deg(arm_servo[0].read());
   arm.B_ang_deg(arm_servo[1].read());
-
 }

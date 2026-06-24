@@ -4,11 +4,11 @@ general class for calculating angles and positions of 2 axis robot arm
 
 ```
  (lager_B : true)      (lager_B : false)
-                    |                C＿                       |              ・/ 。   
-           B        |            ・ /       
-         ／*\        |          ・  /        
-       ／    \       |        ・   /         
-     ／       \      |      ・    /          
+                    |              C＿                       |              ・/ 。   
+           B        |           ・ /       
+         ／*\        |         ・  /        
+       ／    \       |       ・   /         
+     ／       \      |     ・    /          
    ／          \ 。　 |   ・   * /           
   A・・・・・・・C―――   | A――――――B             
  ------------------------------------------

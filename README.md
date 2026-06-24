@@ -10,7 +10,7 @@ general class for calculating angles and positions of 2 axis robot arm
        ／    \       |       ・   /         
      ／       \      |     ・    /          
    ／          \ 。　 |   ・   * /           
-  A・・・・・・・C―――   | A――――――B             
+  A・・・・・・・・C―――  | A――――――B             
  ------------------------------------------
  A : Shoulder of arm
  B : ellbow of arm

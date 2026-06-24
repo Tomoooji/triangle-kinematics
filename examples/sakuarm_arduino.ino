@@ -1,7 +1,7 @@
 /* sakuarm.ino
 ArduinoUNOで動かす朔アーム
 (手首角度維持/個別関節角度調節付き)
-input:アナログジョイスティック+ボタン×3(<-ボタンの役割どうしよ)
+input:アナログジョイスティック
 output:(普通の)Servo
 */
 #include <Servo.h>
@@ -9,7 +9,7 @@ output:(普通の)Servo
 
 constexpr uint8_t arm_pin[3] = {};
 constexpr uint8_t stick_pin[2] = {};
-constexpr uint8_t button_pin[3] = {};
+constexpr uint8_t button_pin = ;
 
 const int arm_xy_speed = 5;
 const int arm_ang_speed = 1;
@@ -26,10 +26,7 @@ void setup(){
   
   pinMode(stick_pin[0],INPUT);
   pinMode(stick_pin[1],INPUT);
-
-  pinMode(button_pin[0],INPUT_PULLUP);
-  pinMode(button_pin[1],INPUT_PULLUP);
-  pinMode(button_pin[2],INPUT_PULLUP);
+  pinMode(button_pin,INPUT_PULLUP);
 
 }
 
@@ -39,14 +36,10 @@ void loop(){
   int valY = analogRead(stick_pin[1]);
   if(abs(valY)<=stick_ignore_range) valY = 0;
   
-  if(digitalRead(button_pin[0]){
-    
-  }
-  else if(digitalRead(button_pin[1]){
-    
-  }
-  else if(digitalRead(button_pin[2]){
-    
+  if(digitalRead(button_pin){
+    // スティック押し込み中にX,Yでそれぞれの関節角度を調節
+    arm.A_ang_deg(valX>0?arm_ang_speed:(valX<0?-arm_ang_speed:0),true);
+    arm.B_ang_deg(valY>0?arm_ang_speed:(valY<0?-arm_ang_speed:0),true);
   }
   else{
     // スティックを動かした分だけアームが移動(離すとその位置で止まる)

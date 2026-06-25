@@ -7,9 +7,9 @@ output:(普通の)Servo
 #include <Servo.h>
 #include "triangle.h"
 
-constexpr uint8_t arm_pin[3] = {};
-constexpr uint8_t stick_pin[2] = {};
-constexpr uint8_t button_pin = ;
+constexpr uint8_t arm_pin[3] = {9,10,11};
+constexpr uint8_t stick_pin[2] = {A0,A1};
+constexpr uint8_t button_pin = 8;
 
 const int arm_xy_speed = 5;
 const int arm_ang_speed = 1;

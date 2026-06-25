@@ -16,10 +16,10 @@ const int arm_ang_speed = 1;
 const int stick_ignore_range = 30;
 
 Triangle arm{36,26};
-arm.C_xy(10,10);
 Servo arm_servo[3];
 
 void setup(){
+  arm.C_xy(10,10);
   arm_servo[0].attach(arm_pin[0]);
   arm_servo[1].attach(arm_pin[1]);
   arm_servo[2].attach(arm_pin[2]);
@@ -36,7 +36,7 @@ void loop(){
   int valY = analogRead(stick_pin[1]);
   if(abs(valY)<=stick_ignore_range) valY = 0;
   
-  if(digitalRead(button_pin){
+  if(digitalRead(button_pin)){
     // スティック押し込み中にX,Yでそれぞれの関節角度を調節
     arm.A_ang_deg(valX>0?arm_ang_speed:(valX<0?-arm_ang_speed:0),true);
     arm.B_ang_deg(valY>0?arm_ang_speed:(valY<0?-arm_ang_speed:0),true);

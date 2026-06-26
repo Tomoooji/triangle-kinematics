@@ -17,7 +17,7 @@ void Position::RAtoXY(){
 }
 
 Triangle::Triangle(float lenAB, float lenBC, float angA, float angB, bool is_B_upper):
-  _lenAB(lenAB),_lenBC(lenBC),_angABC(angB),_upper_B(is_B_upper),_B{0,0,lenAB,angA},_C{0,0,lenBC,(is_upper_B?1:-1)*angA+angB}{
+  _lenAB(lenAB),_lenBC(lenBC),_angABC(angB),_upper_B(is_B_upper),_B{0,0,lenAB,angA},_C{0,0,lenBC,(is_B_upper?1:-1)*angA+angB}{
     //this->_B.a = clip2pi(angA);
     //this->_B.r = lenAB;
     this->_B.RAtoXY();
@@ -68,7 +68,7 @@ bool Triangle::C_ra(float r, float a, bool as_delta){
 }
 
 float Triangle::A_ang_rad(float a, bool as_delta){
-  if(a || as_delta) this->C_ra((as_delta? a: a-this->_B.a),true);
+  if(a || !as_delta) this->C_ra((as_delta? a: a-this->_B.a),true);
   return this->_B.a;
 }
 
@@ -105,7 +105,7 @@ void Triangle::calc_forward(){
 }
 
 void Triangle::calc_inverse(){
-  this->_angABC = acos(constrain((sq(this->_lenAB)+sq(this->_lenBC)-sq(this->_C.r)) / (2*this->_lenAB*this->_lenBC+0.00001),-1,1));
-  this->_B.a = this->_C.a + (this->_upper_B?1:-1)*acos(constrain((sq(this->_lenAB)+sq(this->_C.r)-sq(this->_lenBC)) / (2*this->_lenAB*this->_C.r+0.0001),-1,1));
+  this->_angABC = acos(constrain((sq(this->_lenAB)+sq(this->_lenBC)-sq(this->_C.r)) / (2*this->_lenAB*this->_lenBC+0.001),-1,1));
+  this->_B.a = this->_C.a + (this->_upper_B?1:-1)*acos(constrain((sq(this->_lenAB)+sq(this->_C.r)-sq(this->_lenBC)) / (2*this->_lenAB*this->_C.r+0.001),-1,1));
   this->_B.RAtoXY();
 }

@@ -8,7 +8,6 @@ struct Position{
   float y;
   float r;
   float a;
-  Position();//float val1 = 0, float val2 = 0, bool as_XY = true);
   void XYtoRA();
   void RAtoXY();
 };
@@ -25,7 +24,7 @@ private:
   void calc_inverse();
 public:
   Triangle(float lenAB, float lenBC, float angA = 0, float angB = 0, bool is_B_upper = true);
-  bool B_type(bool larger);
+  bool B_type(bool upper);
   bool is_in_range();
   bool C_xy(float x = 0, float y = 0, bool as_delta = false);
   bool C_ra(float r = 0, float a = 0, bool as_delta = false);

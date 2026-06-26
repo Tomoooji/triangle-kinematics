@@ -17,7 +17,7 @@ void Position::RAtoXY(){
 }
 
 Triangle::Triangle(float lenAB, float lenBC, float angA, float angB, bool is_B_upper):
-  _B(),_C(),_lenAB(lenAB),_lenBC(lenBC),_angABC(angB),_upper_B(is_B_upper){
+  _lenAB(lenAB),_lenBC(lenBC),_angABC(angB),_upper_B(is_B_upper){
     this->_B.a = clip2pi(angA);
     this->_B.r = lenAB;
     this->_B.RAtoXY();

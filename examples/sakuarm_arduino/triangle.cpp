@@ -4,17 +4,6 @@
 float clip2pi(float ang){
   return (ang>TWO_PI? ang-TWO_PI: (ang<0? ang+TWO_PI: ang));
 }
-/*
-Position::Position(float val1, float val2, bool as_XY){
-  if(as_XY){
-    this->x = val1;
-    this->y = val2;
-  }else{
-    this->r = val1;
-    this->a = val2;
-  }
-}
-*/
 
 void Position::XYtoRA(){
   this->r = sqrt(sq(this->x)+sq(this->y));
@@ -27,17 +16,18 @@ void Position::RAtoXY(){
   this->a = clip2pi(this->a);
 }
 
-Triangle::Triangle(float lneAB, float lenBC,float angA, float angB, bool is_B_upper):
-  _B(),_C(),_lenAB(lneAB),_lenBC(lenBC),_angABC(angB),_larger_B(is_B_upper)
- {
-  this->_B.r = angA;
-  this->C_ra();
-}
+Triangle::Triangle(float lenAB, float lenBC, float angA, float angB, bool is_B_upper):
+  _B(),_C(),_lenAB(lenAB),_lenBC(lenBC),_angABC(angB),_upper_B(is_B_upper){
+    this->_B.a = clip2pi(angA);
+    this->_B.r = lenAB;
+    this->_B.RAtoXY();
+    this->calc_forward();
+  }
 
-bool Triangle::B_type(bool larger){
-  bool is_changed = this->_larger_B == larger;
-  this->_larger_B = larger;
-  return is_changed;
+bool Triangle::B_type(bool upper){
+  bool changed = this->_upper_B == upper;
+  this->_upper_B = upper;
+  return changed;
 }
 
 bool Triangle::C_xy(float x, float y, bool as_delta){
@@ -96,7 +86,7 @@ float Triangle::B_ang_deg(float a, bool as_delta){
 }
 
 float Triangle::C_ang_rad(){
-  return clip2pi((this->_larger_B?1:-1)*this->_B.a + this->_angABC);
+  return clip2pi((this->_upper_B?1:-1)*this->_B.a + this->_angABC);
 }
 
 float Triangle::C_ang_deg(){
@@ -108,13 +98,13 @@ bool Triangle::is_in_range(){
 }
 
 void Triangle::calc_forward(){
-  this->_C.x = cos((this->_larger_B?-1:1)*(PI-this->_angABC)+this->_B.a) * this->_lenAB + this->_B.x;
-  this->_C.y = sin((this->_larger_B?-1:1)*(PI-this->_angABC)+this->_B.a) * this->_lenAB + this->_B.y;
+  this->_C.x = cos((this->_upper_B?-1:1)*(PI-this->_angABC)+this->_B.a) * this->_lenAB + this->_B.x;
+  this->_C.y = sin((this->_upper_B?-1:1)*(PI-this->_angABC)+this->_B.a) * this->_lenAB + this->_B.y;
   this->_C.XYtoRA();
 }
 
 void Triangle::calc_inverse(){
-  this->_angABC = acos((sq(this->_lenAB)+sq(this->_lenBC)-sq(this->_C.r)) / (2*this->_lenAB*this->_lenBC));
-  this->_B.a = this->_C.a + (this->_larger_B?1:-1)*acos((sq(this->_lenAB)+sq(this->_C.r)-sq(this->_lenBC)) / (2*this->_lenAB*this->_C.r));
+  this->_angABC = acos(constrain((sq(this->_lenAB)+sq(this->_lenBC)-sq(this->_C.r)) / (2*this->_lenAB*this->_lenBC),-1,1));
+  this->_B.a = this->_C.a + (this->_upper_B?1:-1)*acos(constrain((sq(this->_lenAB)+sq(this->_C.r)-sq(this->_lenBC)) / (2*this->_lenAB*this->_C.r),-1,1));
   this->_B.RAtoXY();
 }

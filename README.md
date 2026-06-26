@@ -1,6 +1,7 @@
 # triangle-kinematics
 
-2軸ロボットアームの逆運動学・順運動学を計算するArduino互換ライブラリ
+2軸ロボットアームの逆運動学・順運動学を計算するArduino互換ライブラリ  
+(以下の説明はGitHub Copilotによるものです。)
 
 ## 概要
 

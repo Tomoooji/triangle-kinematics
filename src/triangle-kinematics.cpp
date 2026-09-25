@@ -25,13 +25,16 @@ Triangle::Triangle(Vectors &&points, const float lengthBaseJoint, const float le
 Triangle::Triangle(const float lengthBaseJoint, const float lengthJointEnd, bool isJointUpper, RadianAbsPi<float> initAngleBase, RadianAbsPi<float> initAngleJoint)
   : Triangle(Triangle::calcForward(lengthBaseJoint, lengthJointEnd, isJointUpper, initAngleBase, initAngleJoint), lengthBaseJoint, lengthJointEnd, isJointUpper) {}
 
-Triangle::Triangle(const float lengthBaseJoint, const float lengthJointEnd, bool isJointUpper, Vector2D<float> initEndPos, Vector2D<float> initBasePos = Vector2D<float>(0, 0))
+Triangle::Triangle(const float lengthBaseJoint, const float lengthJointEnd, bool isJointUpper, Vector2D<float> initEndPos, Vector2D<float> initBasePos)
   : Triangle(Triangle::calcInverse(lengthBaseJoint, lengthJointEnd, isJointUpper, initEndPos, initBasePos), lengthBaseJoint, lengthJointEnd, isJointUpper) {}
 
-
 bool Triangle::isReachable() {
-  return (this->_points.End - this->_points.Base).getR() <= (this->_lengthBaseJoint + this->_lengthJointEnd) &&
-         (this->_points.End - this->_points.Base).getR() >= abs(this->_lengthBaseJoint - this->_lengthJointEnd);
+  return this->isReachable(this->_points);
+}
+
+bool Triangle::isReachable(Triangle::Vectors points) {
+  return (points.End - points.Base).getR() <= (this->_lengthBaseJoint + this->_lengthJointEnd) &&
+         (points.End - points.Base).getR() >= abs(this->_lengthBaseJoint - this->_lengthJointEnd);
 }
 
 bool Triangle::setEndPosition(Vector2D<float> position, bool asDelta) {

@@ -19,15 +19,17 @@ public:
   void calcForward(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAngle) { this->_points = Triangle::calcForward(this->_lengthBaseJoint, this->_lengthJointEnd, this->_isJointUpper, baseAngle, jointAngle); }
   void calcInverse(Vector2D<float> endPosition, Vector2D<float> basePosition = Vector2D<float>(0, 0)) { this->_points = Triangle::calcInverse(this->_lengthBaseJoint, this->_lengthJointEnd, this->_isJointUpper, endPosition, basePosition); }
   bool isReachable();
+  bool isReachable(Triangle::Vectors points);
   bool setEndPosition(Vector2D<float> position, bool asDelta = false);
   bool setBaseAngle(RadianAbsPi<float> angle, bool asDelta = false);
   bool setJointAngle(RadianAbsPi<float> angle, bool asDelta = false);
+  RadianAbsPi<float> getBaseAngle() const { return (this->_points.Joint - this->_points.Base).Theta(); }
   RadianAbsPi<float> getJointAngle() const;
   RadianAbsPi<float> getEndSlope() const;
   bool isJointUpper() const { return this->_isJointUpper; }
-  const Vector2D<float> &getBase() const { return this->Base; }
-  const Vector2D<float> &getJoint() const { return this->Joint; }
-  const Vector2D<float> &getEnd() const { return this->End; }
+  const Vector2D<float> &getBase() const { return this->_points.Base; }
+  const Vector2D<float> &getJoint() const { return this->_points.Joint; }
+  const Vector2D<float> &getEnd() const { return this->_points.End; }
   const float &lengthBaseJoint() const { return this->_lengthBaseJoint; }
   const float &lengthJointEnd() const { return this->_lengthJointEnd; }
 }

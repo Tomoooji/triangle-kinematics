@@ -1,0 +1,34 @@
+{
+    "name": "TwoLink-kinematics",
+    "version": "1.0.0",
+    "description": "Forward and inverse kinematics for two-link robotic arms.",
+    "keywords": [
+        "kinematics",
+        "robotics",
+        "robot-arm",
+        "forward-kinematics",
+        "inverse-kinematics"
+    ],
+    "authors": [
+        {
+            "name": "Tomoooji",
+            "maintainer": true,
+            "url": "https://github.com/Tomoooji"
+        }
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Tomoooji/triangle-kinematics.git"
+    },
+    "frameworks": [
+        "arduino"
+    ],
+    "platforms": "*",
+    "dependencies": [
+        {
+            "name": "mathmatics_tmj",
+            "owner": "Tomoooji"
+        }
+    ]
+}

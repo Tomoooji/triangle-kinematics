@@ -12,9 +12,10 @@ private:
   const bool _isJointUpper;
 
 protected:
-  TwoLink(Positions &&points, const float lengthBaseJoint,
-          const float lengthJointEnd, bool isJointUpper);
+  TwoLink(Positions &&points, const float lengthBaseJoint, const float lengthJointEnd, bool isJointUpper);
   bool isReachable(TwoLink::Positions points);
+  bool isReachable(Vector2D<float> end, Vector2D<float> base) { return this->isReachable(end - base); }
+
   static TwoLink::Positions calcForward(const float lengthBaseJoint, const float lengthJointEnd,
                                         bool isJointUpper, RadianAbsPi<float> baseAngle,
                                         RadianAbsPi<float> jointAngle,
@@ -22,9 +23,10 @@ protected:
   static TwoLink::Positions calcInverse(const float lengthBaseJoint, const float lengthJointEnd,
                                         bool isJointUpper, Vector2D<float> endPosition,
                                         Vector2D<float> basePosition = Vector2D<float>(0, 0));
+
   TwoLink::Positions calcForward(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAngle) {
     return TwoLink::calcForward(this->_lengthBaseJoint, this->_lengthJointEnd,
-                                this->_isJointUpper, baseAngle, jointAngle);
+                                this->_isJointUpper, baseAngle, jointAngle, this->_points.Base);
   }
   TwoLink::Positions calcInverse(Vector2D<float> endPosition, Vector2D<float> basePosition = Vector2D<float>(0, 0)) {
     return TwoLink::calcInverse(this->_lengthBaseJoint, this->_lengthJointEnd,
@@ -42,10 +44,15 @@ public:
   virtual ~TwoLink() = default;
   
   bool setEndPosition(Vector2D<float> position, bool asDelta = false);
-  bool setBaseAngle(RadianAbsPi<float> angle, bool asDelta = false);
-  bool setJointAngle(RadianAbsPi<float> angle, bool asDelta = false);
+  bool setAngles(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAngle, bool asDelta = false);
+  bool setBaseAngle(RadianAbsPi<float> angle, bool asDelta = false) {
+    return this->setAngles((asDelta ? this->getBaseAngle() + angle : angle), this->getJointAngle(), false);
+  }
+  bool setJointAngle(RadianAbsPi<float> angle, bool asDelta = false) {
+    return this->setAngles(this->getBaseAngle(), (asDelta ? this->getJointAngle() + angle : angle), false);
+  }
   
-  bool isReachable() { return this->isReachable(this->_points); }
+  //bool isReachable() { return this->isReachable(this->_points); } // これいらんくね
   bool isJointUpper() const { return this->_isJointUpper; }
 
   RadianAbsPi<float> getBaseAngle() const { return (this->_points.Joint - this->_points.Base).Theta(); }
@@ -58,4 +65,4 @@ public:
 
   const float &lengthBaseJoint() const { return this->_lengthBaseJoint; }
   const float &lengthJointEnd() const { return this->_lengthJointEnd; }
-}
+};

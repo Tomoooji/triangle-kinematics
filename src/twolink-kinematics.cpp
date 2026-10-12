@@ -6,8 +6,9 @@ TwoLink::Positions TwoLink::calcForward(const float lengthBaseJoint, const float
   TwoLink::Positions points{
     .Base = basePosition,
     .Joint = Vector2D<float>::fromPolar(lengthBaseJoint, baseAngle) + basePosition,
-    .End = Vector2D<float>::fromPolar(lengthBaseJoint + lengthJointEnd, baseAngle + jointAngle * (isJointUpper ? 1 : -1)) + basePosition
+    .End = Vector2D<float>::fromPolar(lengthBaseJoint, baseAngle) + basePosition
   };
+  points.End += Vector2D<float>::fromPolar(lengthJointEnd, (PI_FOR_RADIAN - jointAngle + (isJointUpper ? 1 : -1) * baseAngle).normalize());
   return points;
 }
 
@@ -15,12 +16,12 @@ TwoLink::Positions TwoLink::calcInverse(const float lengthBaseJoint, const float
                                         Vector2D<float> endPosition, Vector2D<float> basePosition) {
   TwoLink::Positions points{
     .Base = basePosition,
-    .Joint = Vector2D<float>(0, 0),
+    .Joint = basePosition,
     .End = endPosition
   };
   RadianAbsPi<float> angle_JointBaseEnd =
       acos(((sq(points.End - points.Base).getR()) + sq(lengthBaseJoint) - sq(lengthJointEnd)) / (2 * lengthBaseJoint * (points.End - points.Base).getR()));
-  points.Joint = Vector2D<float>::fromPolar(lengthBaseJoint, (points.End - points.Base).Theta() + (isJointUpper ? 1 : -1) * angle_JointBaseEnd.normalize());
+  points.Joint += Vector2D<float>::fromPolar(lengthBaseJoint, (points.End - points.Base).Theta() + (isJointUpper ? 1 : -1) * angle_JointBaseEnd.normalize());
   return points;
 }
 
@@ -33,34 +34,26 @@ TwoLink::TwoLink(const float lengthBaseJoint, const float lengthJointEnd, bool i
 TwoLink::TwoLink(const float lengthBaseJoint, const float lengthJointEnd, bool isJointUpper, Vector2D<float> initEndPos, Vector2D<float> initBasePos)
   : TwoLink(TwoLink::calcInverse(lengthBaseJoint, lengthJointEnd, isJointUpper, initEndPos, initBasePos), lengthBaseJoint, lengthJointEnd, isJointUpper) {}
 
-bool TwoLink::isReachable(TwoLink::Vectors points) {
-  return (points.End - points.Base).getR() <= (this->_lengthBaseJoint + this->_lengthJointEnd) &&
-         (points.End - points.Base).getR() >= abs(this->_lengthBaseJoint - this->_lengthJointEnd);
+bool TwoLink::isReachable(Vector2D<float> vectorBaseJoint) {
+  return vectorBaseJoint.getR() <= (this->_lengthBaseJoint + this->_lengthJointEnd) &&
+         vectorBaseJoint.getR() >= abs(this->_lengthBaseJoint - this->_lengthJointEnd);
 }
 
 bool TwoLink::setEndPosition(Vector2D<float> position, bool asDelta) {
-  TwoLink::Positions points;
-  points = this->calcInverse((asDelta ? this->_points.End + position : position), this->_points.Base);
-  if (this->isReachable(points)) {
-    this->_points = std::move(points);
+  Vector2D<float> endPosition = asDelta ? this->_points.End + position : position;
+  if (this->isReachable(endPosition, this->_points.Base)) {
+    this->_points = this->calcInverse(endPosition, this->_points.Base);
     return true;
   } else {
     return false;
   }
 }
 
-bool TwoLink::setBaseAngle(RadianAbsPi<float> angle, bool asDelta) {
-  TwoLink::Positions points = this->calcForward((asDelta ? this->getBaseAngle() + angle : angle), this->getJointAngle());
-  if (this->isReachable(points)) {
-    this->_points = std::move(points);
-    return true;
-  } else {
-    return false;
-  }
-}
-
-bool TwoLink::setJointAngle(RadianAbsPi<float> angle, bool asDelta) {
-  TwoLink::Positions points = this->calcForward(this->getBaseAngle(), (asDelta ? this->getJointAngle() + angle : angle));
+bool TwoLink::setAngles(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAngle, bool asDelta) {
+  TwoLink::Positions points = this->calcForward(
+    (asDelta ? this->getBaseAngle() + baseAngle : baseAngle),
+    (asDelta ? this->getJointAngle() + jointAngle : jointAngle)
+  );
   if (this->isReachable(points)) {
     this->_points = std::move(points);
     return true;

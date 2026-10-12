@@ -5,7 +5,7 @@ input:アナログジョイスティック
 output:(普通の)Servo
 */
 #include <Servo.h>
-#include "triangle.h"
+#include "twolink_kinematics.h"
 
 constexpr uint8_t arm_pin[3] = {9,10,11};
 constexpr uint8_t stick_pin[2] = {A0,A1};
@@ -15,19 +15,19 @@ const int arm_xy_speed = 5;
 const int arm_ang_speed = 1;
 const int stick_ignore_range = 30;
 
-Triangle arm{36,26};
+TwoLink arm{36,26,true};
 Servo arm_servo[3];
 
 void setup(){
-  arm.C_xy(10,10);
-  arm_servo[0].attach(arm_pin[0]);
-  arm_servo[1].attach(arm_pin[1]);
-  arm_servo[2].attach(arm_pin[2]);
-  
   pinMode(stick_pin[0],INPUT);
   pinMode(stick_pin[1],INPUT);
   pinMode(button_pin,INPUT_PULLUP);
 
+  arm_servo[0].attach(arm_pin[0]);
+  arm_servo[1].attach(arm_pin[1]);
+  arm_servo[2].attach(arm_pin[2]);
+  
+  arm.setEndPosition(10,10);
 }
 
 void loop(){
@@ -38,30 +38,24 @@ void loop(){
   
   if(digitalRead(button_pin)){
     // スティック押し込み中にX,Yでそれぞれの関節角度を調節
-    arm.A_ang_deg(valX>0?arm_ang_speed:(valX<0?-arm_ang_speed:0),true);
-    arm.B_ang_deg(valY>0?arm_ang_speed:(valY<0?-arm_ang_speed:0),true);
+    arm.setBaseAngle(valX>0?arm_ang_speed:(valX<0?-arm_ang_speed:0),true);
+    arm.setJointAngle(valY>0?arm_ang_speed:(valY<0?-arm_ang_speed:0),true);
   }
   else{
     // スティックを動かした分だけアームが移動(離すとその位置で止まる)
-    arm.C_xy(
+    arm.setEndPosition(
       valX>0?arm_xy_speed:(valX<0?-arm_xy_speed:0),
       valY>0?arm_xy_speed:(valY<0?-arm_xy_speed:0),
-      true
+      true // ここをfalseにするとジョイスティックの絶対位置にアームが追従するようになる
     );
-    
-    /*
-    スティックとアームの位置を対応(離すと元の位置に戻る)
-    arm.C_xy(
-      origin[0] + convert(valX),
-      origin[1] + convert(valY),
-      false
-    );
-    */
   }
-  arm_servo[0].write(constrain(arm.A_ang_deg(),0,180));
-  arm_servo[1].write(constrain(arm.B_ang_deg(),0,180));
-  arm_servo[2].write(constrain(arm.C_ang_deg()-90,0,180));
-  
-  arm.A_ang_deg(arm_servo[0].read());
-  arm.B_ang_deg(arm_servo[1].read());
+
+  // サーボに角度を出力
+  arm_servo[0].write(constrain(arm.getBaseAngle().deg(),0,180));
+  arm_servo[1].write(constrain(arm.getJointAngle().deg(),0,180));
+  arm_servo[2].write(constrain(arm.getEndSlope().deg()-90,0,180));
+
+  // サーボの角度(0~180°)をアームに反映
+  arm.setBaseAngle(arm_servo[0].read(),false);
+  arm.setJointAngle(arm_servo[1].read(),false);
 }

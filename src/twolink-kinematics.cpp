@@ -25,7 +25,7 @@ TwoLink::Positions TwoLink::calcInverse(const float lengthBaseJoint, const float
     .End = endPosition
   };
   RadianAbsPi<float> angle_JointBaseEnd = 
-      acos(constrain(((sq(points.End - points.Base).getR()) + sq(lengthBaseJoint) - sq(lengthJointEnd)) / (2 * lengthBaseJoint * (points.End - points.Base).getR() + 1e-6f), -1.0f, 1.0f));
+      acos(constrain(((sq((points.End - points.Base).getR())) + sq(lengthBaseJoint) - sq(lengthJointEnd)) / (2 * lengthBaseJoint * (points.End - points.Base).getR() + 1e-6f), -1.0f, 1.0f));
   points.Joint += Vector2D<float>::fromPolar(lengthBaseJoint, (points.End - points.Base).Theta() + (isJointUpper ? 1 : -1) * angle_JointBaseEnd.normalize());
   return points;
 }

@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "twolink-kinematics.h"
 
+extern const Radian2Pi<float> PI_FOR_RADIAN;
+
 bool TwoLink::isReachable(const float lengthBaseJoint, const float lengthJointEnd, Vector2D<float> vectorBaseJoint) {
   return vectorBaseJoint.getR() <= (lengthBaseJoint + lengthJointEnd) &&
          vectorBaseJoint.getR() >= abs(lengthBaseJoint - lengthJointEnd);
@@ -45,7 +47,7 @@ TwoLink::TwoLink(const float lengthBaseJoint, const float lengthJointEnd, bool i
 
 bool TwoLink::setEndPosition(Vector2D<float> position, bool asDelta) {
   Vector2D<float> endPosition = asDelta ? this->_points.End + position : position;
-  if (this->isReachable(endPosition, this->_points.Base)) {
+  if (this->isReachable(endPosition)) {
     this->_points = this->calcInverse(endPosition, this->_points.Base);
     return true;
   } else {
@@ -53,20 +55,16 @@ bool TwoLink::setEndPosition(Vector2D<float> position, bool asDelta) {
   }
 }
 
-bool TwoLink::setAngles(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAngle, bool asDelta) {
-  TwoLink::Positions points = this->calcForward(
+void TwoLink::setAngles(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAngle, bool asDelta) {
+  this->_points = this->calcForward(
     (asDelta ? this->getBaseAngle() + baseAngle : baseAngle),
     (asDelta ? this->getJointAngle() + jointAngle : jointAngle)
   );
-  if (this->isReachable(points)) {
-    this->_points = std::move(points);
-    return true;
-  } else {
-    return false;
-  }
 }
 
 RadianAbsPi<float> TwoLink::getJointAngle() const {
+  return (PI_FOR_RADIAN - this->getEndSlope() + (this->isJointUpper() ? 1 : -1) * (this->_points.Joint - this->_points.Base).Theta()).normalize();
+
   return this->getEndSlope() + (this->isJointUpper() ? 1 : -1) * (this->_points.Joint - this->_points.Base).Theta();
 }
 

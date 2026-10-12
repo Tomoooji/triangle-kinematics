@@ -49,12 +49,12 @@ public:
   virtual ~TwoLink() = default;
   
   bool setEndPosition(Vector2D<float> position, bool asDelta = false);
-  bool setAngles(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAngle, bool asDelta = false);
-  bool setBaseAngle(RadianAbsPi<float> angle, bool asDelta = false) {
-    return this->setAngles((asDelta ? this->getBaseAngle() + angle : angle), this->getJointAngle(), false);
+  void setAngles(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAngle, bool asDelta = false);
+  void setBaseAngle(RadianAbsPi<float> angle, bool asDelta = false) {
+    this->setAngles((asDelta ? this->getBaseAngle() + angle : angle), this->getJointAngle(), false);
   }
-  bool setJointAngle(RadianAbsPi<float> angle, bool asDelta = false) {
-    return this->setAngles(this->getBaseAngle(), (asDelta ? this->getJointAngle() + angle : angle), false);
+  void setJointAngle(RadianAbsPi<float> angle, bool asDelta = false) {
+    this->setAngles(this->getBaseAngle(), (asDelta ? this->getJointAngle() + angle : angle), false);
   }
   
   bool isJointUpper() const { return this->_isJointUpper; }

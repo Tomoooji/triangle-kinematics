@@ -5,7 +5,7 @@ input:アナログジョイスティック
 output:(普通の)Servo
 */
 #include <Servo.h>
-#include "twolink_kinematics.h"
+#include "two_link_kinematics.h"
 
 constexpr uint8_t arm_pin[3] = {9,10,11};
 constexpr uint8_t stick_pin[2] = {A0,A1};
@@ -56,6 +56,6 @@ void loop(){
   arm_servo[2].write(constrain(arm.getEndSlope().deg()-90,0,180));
 
   // サーボの角度(0~180°)をアームに反映
-  arm.setBaseAngle(arm_servo[0].read(),false);
-  arm.setJointAngle(arm_servo[1].read(),false);
+  arm.setBaseAngleDeg(arm_servo[0].read(),false);
+  arm.setJointAngleDeg(arm_servo[1].read(),false);
 }

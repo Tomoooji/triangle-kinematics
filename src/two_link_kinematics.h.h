@@ -49,14 +49,35 @@ public:
   virtual ~TwoLink() = default;
   
   bool setEndPosition(Vector2D<float> position, bool asDelta = false);
+  bool setEndPosition(float x, float y, bool asDelta = false) {
+    return this->setEndPosition(Vector2D<float>(x, y), asDelta);
+  }
   void setAngles(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAngle, bool asDelta = false);
+  void setAnglesRad(float baseAngle, float jointAngle, bool asDelta = false) {
+    this->setAngles(RadianAbsPi<float>(baseAngle), RadianAbsPi<float>(jointAngle), asDelta);
+  }
+  void setAnglesDeg(float baseAngle, float jointAngle, bool asDelta = false) {
+    this->setAngles(RadianAbsPi<float>(baseAngle * PI_FOR_RADIAN / 180.0f), RadianAbsPi<float>(jointAngle * PI_FOR_RADIAN / 180.0f), asDelta);
+  }
   void setBaseAngle(RadianAbsPi<float> angle, bool asDelta = false) {
     this->setAngles((asDelta ? this->getBaseAngle() + angle : angle), this->getJointAngle(), false);
+  }
+  void setBaseAngleRad(float angle, bool asDelta = false) {
+    this->setBaseAngle(RadianAbsPi<float>(angle), asDelta);
+  }
+  void setBaseAngleDeg(float angle, bool asDelta = false) {
+    this->setBaseAngle(RadianAbsPi<float>(angle * PI_FOR_RADIAN / 180.0f), asDelta);
   }
   void setJointAngle(RadianAbsPi<float> angle, bool asDelta = false) {
     this->setAngles(this->getBaseAngle(), (asDelta ? this->getJointAngle() + angle : angle), false);
   }
-  
+  void setJointAngleRad(float angle, bool asDelta = false) {
+    this->setJointAngle(RadianAbsPi<float>(angle), asDelta);
+  }
+  void setJointAngleDeg(float angle, bool asDelta = false) {
+    this->setJointAngle(RadianAbsPi<float>(angle * PI_FOR_RADIAN / 180.0f), asDelta);
+  }
+
   bool isJointUpper() const { return this->_isJointUpper; }
 
   RadianAbsPi<float> getBaseAngle() const { return (this->_points.Joint - this->_points.Base).Theta(); }

@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "twolink-kinematics.h"
+#include "two_link_kinematics.h"
 
 bool TwoLink::isReachable(const float lengthBaseJoint, const float lengthJointEnd, Vector2D<float> vectorBaseJoint) {
   return vectorBaseJoint.getR() <= (lengthBaseJoint + lengthJointEnd) &&

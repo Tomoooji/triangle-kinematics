@@ -1,6 +1,13 @@
 #include <Arduino.h>
 #include "twolink-kinematics.h"
 
+#if __cplusplus >= 201703L
+#include <algorithm>
+#define clamp std::clamp
+#else
+#define clamp constrain
+#endif
+
 extern const Radian2Pi<float> PI_FOR_RADIAN;
 
 bool TwoLink::isReachable(const float lengthBaseJoint, const float lengthJointEnd, Vector2D<float> vectorBaseJoint) {
@@ -26,8 +33,9 @@ TwoLink::Positions TwoLink::calcInverse(const float lengthBaseJoint, const float
     .Joint = basePosition,
     .End = endPosition
   };
-  RadianAbsPi<float> angle_JointBaseEnd =
-      acos(((sq(points.End - points.Base).getR()) + sq(lengthBaseJoint) - sq(lengthJointEnd)) / (2 * lengthBaseJoint * (points.End - points.Base).getR()));
+  RadianAbsPi<float> angle_JointBaseEnd = clamp(
+      acos(((sq(points.End - points.Base).getR()) + sq(lengthBaseJoint) - sq(lengthJointEnd)) / (2 * lengthBaseJoint * (points.End - points.Base).getR() + 1e-6f)),
+      0.0f, PI_FOR_RADIAN);
   points.Joint += Vector2D<float>::fromPolar(lengthBaseJoint, (points.End - points.Base).Theta() + (isJointUpper ? 1 : -1) * angle_JointBaseEnd.normalize());
   return points;
 }
@@ -64,8 +72,6 @@ void TwoLink::setAngles(RadianAbsPi<float> baseAngle, RadianAbsPi<float> jointAn
 
 RadianAbsPi<float> TwoLink::getJointAngle() const {
   return (PI_FOR_RADIAN - this->getEndSlope() + (this->isJointUpper() ? 1 : -1) * (this->_points.Joint - this->_points.Base).Theta()).normalize();
-
-  return this->getEndSlope() + (this->isJointUpper() ? 1 : -1) * (this->_points.Joint - this->_points.Base).Theta();
 }
 
 RadianAbsPi<float> TwoLink::getEndSlope() const {
